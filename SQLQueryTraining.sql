@@ -6,6 +6,10 @@ SELECT * FROM FactInternetSales;
 -- limiting results
 SELECT TOP 1000 * FROM FactInternetSales; -- in other DB's use LIMIT 1000;
 
+SELECT * FROM FactInternetSales 
+OFFSET 1000 ROWS 
+FETCH NEXT 1000 ROWS ONLY; -- select next 1000 after 1000 rows;
+
 -- select using column names
 SELECT [ProductKey]
       ,[OrderDateKey]
@@ -119,35 +123,35 @@ order by OrderDate
 -- (eg- Summerize the data, Create a context to get deeper understading, Identify paterns & trends)
 
 SELECT 
-		cat.EnglishProductCategoryName 'Category'
-    ,	sub.EnglishProductSubcategoryName 'SubCategory'
-	,	count(1) 'Count' -- How many sales where there?
-	,	sum(s.SalesAmount) 'Sales' -- How much sales did we have?
-    ,	avg(s.SalesAmount) 'Avg_SalesAmount' -- What was the Avg sale amount?
-    ,	min(s.SalesAmount) 'Min_SaleAmount' -- What was the Min sale amount?
-    ,	max(s.SalesAmount) 'Max_SaleAmount' -- What was the Max sale amount
+	cat.EnglishProductCategoryName 'Category'
+    	,sub.EnglishProductSubcategoryName 'SubCategory'
+	,count(1) 'Count' -- How many sales where there?
+	,sum(s.SalesAmount) 'Sales' -- How much sales did we have?
+    	,avg(s.SalesAmount) 'Avg_SalesAmount' -- What was the Avg sale amount?
+    	,min(s.SalesAmount) 'Min_SaleAmount' -- What was the Min sale amount?
+    	,max(s.SalesAmount) 'Max_SaleAmount' -- What was the Max sale amount
 FROM FactInternetSales s
 LEFT JOIN DimProduct p ON s.ProductKey = p.ProductKey
 LEFT JOIN DimProductSubcategory sub ON p.ProductSubcategoryKey = sub.ProductSubcategoryKey
 LEFT JOIN DimProductCategory cat ON sub.ProductCategoryKey = cat.ProductCategoryKey
 -- must use group by in order for aggregation to work properly
 GROUP BY
-		cat.EnglishProductCategoryName -- column aliases aren't allowed
-    ,	sub.EnglishProductSubcategoryName
+	cat.EnglishProductCategoryName -- column aliases aren't allowed
+    	,sub.EnglishProductSubcategoryName
 ORDER BY
-		cat.EnglishProductCategoryName
-	,	sub.EnglishProductSubcategoryName
+	cat.EnglishProductCategoryName
+	,sub.EnglishProductSubcategoryName
 
 -- filter to 2013 with WHERE
 SELECT 
-		YEAR(s.OrderDate) 'Year'
-	,	cat.EnglishProductCategoryName 'Category'
-    ,	sub.EnglishProductSubcategoryName 'SubCategory'	
-	,	count(1) 'Count' -- use 1 instead of a field for faster performance
-	,	sum(s.SalesAmount) 'Sales'
-    ,	avg(s.SalesAmount) 'Avg_Quantity'
-    ,	min(s.SalesAmount) 'Min_SaleAmount'
-    ,	max(s.SalesAmount) 'Max_SaleAmount'
+	YEAR(s.OrderDate) 'Year'
+	,cat.EnglishProductCategoryName 'Category'
+    	,sub.EnglishProductSubcategoryName 'SubCategory'	
+	,count(1) 'Count' -- use 1 instead of a field for faster performance
+	,sum(s.SalesAmount) 'Sales'
+    	,avg(s.SalesAmount) 'Avg_Quantity'
+    	,min(s.SalesAmount) 'Min_SaleAmount'
+    	,max(s.SalesAmount) 'Max_SaleAmount'
 
 FROM FactInternetSales s
 INNER JOIN DimProduct p ON s.ProductKey = p.ProductKey
@@ -157,22 +161,22 @@ INNER JOIN DimProductCategory cat ON sub.ProductCategoryKey = cat.ProductCategor
 WHERE YEAR(s.OrderDate) = 2013 --use date function to parse year
 -- must use group by in order for aggregation to work properly
 GROUP BY
-		YEAR(s.OrderDate)
-	,	cat.EnglishProductCategoryName -- column aliases aren't allowed
-    ,	sub.EnglishProductSubcategoryName
+	YEAR(s.OrderDate)
+	,cat.EnglishProductCategoryName -- column aliases aren't allowed
+    	,sub.EnglishProductSubcategoryName
 ORDER BY
-		cat.EnglishProductCategoryName
-	,	sub.EnglishProductSubcategoryName
+	cat.EnglishProductCategoryName
+	,sub.EnglishProductSubcategoryName
 
 -- Only show products in 2013 that sold more than $1M USD
 SELECT 
-		cat.EnglishProductCategoryName 'Category'
-    ,	sub.EnglishProductSubcategoryName 'SubCategory'	
-	,	count(1) 'Count' -- use 1 instead of a field for faster performance
-	,	sum(s.SalesAmount) 'Sales'
-    ,	avg(s.SalesAmount) 'Avg_Quantity'
-    ,	min(s.SalesAmount) 'Min_SaleAmount'
-    ,	max(s.SalesAmount) 'Max_SaleAmount'
+	cat.EnglishProductCategoryName 'Category'
+    	,sub.EnglishProductSubcategoryName 'SubCategory'	
+	,count(1) 'Count' -- use 1 instead of a field for faster performance
+	,sum(s.SalesAmount) 'Sales'
+    	,avg(s.SalesAmount) 'Avg_Quantity'
+    	,min(s.SalesAmount) 'Min_SaleAmount'
+    	,max(s.SalesAmount) 'Max_SaleAmount'
 FROM FactInternetSales s
 INNER JOIN DimProduct p ON s.ProductKey = p.ProductKey
 INNER JOIN DimProductSubcategory sub ON p.ProductSubcategoryKey = sub.ProductSubcategoryKey
@@ -181,14 +185,14 @@ INNER JOIN DimProductCategory cat ON sub.ProductCategoryKey = cat.ProductCategor
 WHERE YEAR(s.OrderDate) = 2013 --use date function to parse year
 -- must use group by in order for aggregation to work properly
 GROUP BY
-		cat.EnglishProductCategoryName -- column aliases aren't allowed
-    ,	sub.EnglishProductSubcategoryName	
+	cat.EnglishProductCategoryName -- column aliases aren't allowed
+    	,sub.EnglishProductSubcategoryName	
 -- use HAVING to filter after the aggregate is computed
 HAVING
-		sum(s.SalesAmount) > 1000000
+	sum(s.SalesAmount) > 1000000
 ORDER BY
-		cat.EnglishProductCategoryName
-	,	sub.EnglishProductSubcategoryName
+	cat.EnglishProductCategoryName
+	,sub.EnglishProductSubcategoryName
 
 -- Window Functions - Arguments which focuses our analysis to a one particular segments of the data
 
@@ -204,20 +208,20 @@ GO
 
 -- Show each sales average for Group, Country, and Region all in one query
 SELECT DISTINCT		
-		t.SalesTerritoryGroup
-	,	t.SalesTerritoryCountry
-	,	t.SalesTerritoryRegion
-	,	AVG(s.SalesAmount) OVER(PARTITION BY t.SalesTerritoryGroup ) as 'GroupAvgSales'		
-	,	AVG(s.SalesAmount) OVER(PARTITION BY t.SalesTerritoryCountry ) as 'CountryAvgSales'
-	,	AVG(s.SalesAmount) OVER(PARTITION BY t.SalesTerritoryRegion ) as 'RegionAvgSales'	
+	t.SalesTerritoryGroup
+	,t.SalesTerritoryCountry
+	,t.SalesTerritoryRegion
+	,AVG(s.SalesAmount) OVER(PARTITION BY t.SalesTerritoryGroup ) as 'GroupAvgSales'		
+	,AVG(s.SalesAmount) OVER(PARTITION BY t.SalesTerritoryCountry ) as 'CountryAvgSales'
+	,AVG(s.SalesAmount) OVER(PARTITION BY t.SalesTerritoryRegion ) as 'RegionAvgSales'	
 	
 FROM FactInternetSales s
 JOIN DimSalesTerritory t ON
 	s.SalesTerritoryKey = t.SalesTerritoryKey	
 WHERE
-		YEAR(s.OrderDate) = 2013
+	YEAR(s.OrderDate) = 2013
 ORDER BY
-		1,2,3
+	1,2,3
 
 
 -- Sub Queries
@@ -266,26 +270,26 @@ WHERE EXISTS
 
 -- first create weekly sales totals
 SELECT	SUM(s.SalesAmount) 'WeeklySales' 
-	,	DATEPART(ww, s.OrderDate) as 'WeekNum'
+	,DATEPART(ww, s.OrderDate) as 'WeekNum'
 FROM	FactInternetSales s
 WHERE	YEAR(s.OrderDate) = 2013
 GROUP BY
-		DATEPART(ww, s.OrderDate)
+	DATEPART(ww, s.OrderDate)
 ORDER BY
-		DATEPART(ww, s.OrderDate) ASC
+	DATEPART(ww, s.OrderDate) ASC
 
 -- use that subquery as our source and calculate the moving average
 SELECT
-		AVG(WeeklySales) OVER (ORDER BY WeekNum ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) as AvgSales
-	,	WeeklySales as 'TotalSales'
-	,	WeekNum
+	AVG(WeeklySales) OVER (ORDER BY WeekNum ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) as AvgSales
+	,WeeklySales as 'TotalSales'
+	,WeekNum
 FROM (
 	SELECT	SUM(s.SalesAmount) 'WeeklySales' 
-		,	DATEPART(ww, s.OrderDate) as 'WeekNum'
+		,DATEPART(ww, s.OrderDate) as 'WeekNum'
 	FROM	FactInternetSales s
 	WHERE	YEAR(s.OrderDate) = 2013
 	GROUP BY
-			DATEPART(ww, s.OrderDate)
+		DATEPART(ww, s.OrderDate)
 	) AS s
 GROUP BY
 		WeekNum, WeeklySales
@@ -294,9 +298,9 @@ ORDER BY
 
 -- Running Total of Monthly sales for OrderYear 2013
 SELECT
-		SUM(MonthlySales) OVER (ORDER BY SalesMonth ROWS UNBOUNDED PRECEDING) as YTDSales
-	,	MonthlySales as 'MonthlySales'
-	,	SalesMonth
+	SUM(MonthlySales) OVER (ORDER BY SalesMonth ROWS UNBOUNDED PRECEDING) as YTDSales
+	,MonthlySales as 'MonthlySales'
+	,SalesMonth
 FROM (
 	SELECT	SUM(s.SalesAmount) 'MonthlySales' 
 		,	MONTH(s.OrderDate) as 'SalesMonth'
@@ -312,18 +316,18 @@ ORDER BY
 
 -- Running Total of Monthly sales for all the years,(Running total resets at each year end)
 SELECT
-		SUM(MonthlySales) OVER (PARTITION BY SalesYear ORDER BY SalesMonth ROWS UNBOUNDED PRECEDING) as YTDSales
-	,	MonthlySales as 'MonthlySales'
-	,	SalesYear
-	,	SalesMonth
+	SUM(MonthlySales) OVER (PARTITION BY SalesYear ORDER BY SalesMonth ROWS UNBOUNDED PRECEDING) as YTDSales
+	,MonthlySales as 'MonthlySales'
+	,SalesYear
+	,SalesMonth
 FROM (
 	SELECT	SUM(s.SalesAmount) 'MonthlySales' 
-		,	MONTH(s.OrderDate) as 'SalesMonth'
-		,	year(s.OrderDate) as 'SalesYear'
+		,MONTH(s.OrderDate) as 'SalesMonth'
+		,year(s.OrderDate) as 'SalesYear'
 	FROM	FactInternetSales s
 	GROUP BY
-			MONTH(s.OrderDate)
-		,	year(s.OrderDate)
+		MONTH(s.OrderDate)
+		,year(s.OrderDate)
 	) AS s
 GROUP BY
 		SalesMonth, SalesYear, MonthlySales
@@ -352,8 +356,8 @@ from DimDate  -- Date dimenssion
 -- Show me a trend of active employees by each day
 -- Start by getting the Daily count
 SELECT
-		dt.FullDateAlternateKey as 'Date'
-	,	count(1) as ActiveCount	
+	dt.FullDateAlternateKey as 'Date'
+	,count(1) as ActiveCount	
 FROM DimDate dt
 LEFT JOIN	(SELECT 'Active' as 'EmpStatus', * FROM DimEmployee) emp
 	-- regular active employees
@@ -371,8 +375,8 @@ order by 1
 
 -- These counts are cumulative, so for monthly totals take the last day of the month
 SELECT
-		dt.FullDateAlternateKey as 'Date'
-	,	count(1) as ActiveCount	
+	dt.FullDateAlternateKey as 'Date'
+	,count(1) as ActiveCount	
 FROM DimDate dt
 LEFT JOIN	(SELECT 'Active' as 'EmpStatus', * FROM DimEmployee) emp
 	-- regular active employees
@@ -395,19 +399,19 @@ ORDER BY 1
 
 -- Calculate the customer acquisition funnel
 SELECT
-		c.FirstName
-	,	c.LastName
-	,	c.DateFirstPurchase
-	,	DATEDIFF(d,c.DateFirstPurchase,getdate()) as 'DaysSinceFirstPurchase' -- How long have they been a customer?
+	c.FirstName
+	,c.LastName
+	,c.DateFirstPurchase
+	,DATEDIFF(d,c.DateFirstPurchase,getdate()) as 'DaysSinceFirstPurchase' -- How long have they been a customer?
 FROM DimCustomer c
 ORDER BY 3 DESC
 
 
 -- Calculate a Monthly average of customer tenure
 SELECT
-		EOMONTH(c.DateFirstPurchase) as 'MonthOfFirstPurchase' -- What month did they become a customer?
-	,	DATEDIFF(d,EOMONTH(c.DateFirstPurchase),getdate()) as 'DaysSinceFirstPurchase' -- How long have they been a customer?
-	,	COUNT(1) as 'CustomerCount' -- How manY customers are there for this month?
+	EOMONTH(c.DateFirstPurchase) as 'MonthOfFirstPurchase' -- What month did they become a customer?
+	,DATEDIFF(d,EOMONTH(c.DateFirstPurchase),getdate()) as 'DaysSinceFirstPurchase' -- How long have they been a customer?
+	,COUNT(1) as 'CustomerCount' -- How manY customers are there for this month?
 FROM DimCustomer c
 GROUP BY EOMONTH(c.DateFirstPurchase)
 ORDER BY 2 DESC
@@ -417,10 +421,10 @@ ORDER BY 2 DESC
 
 -- Get the most recent month
 SELECT
-		d.CalendarYear
-	,	d.MonthNumberOfYear
-	,	mdt.IsMaxDate
-	,	sum(s.SalesAmount) as 'TotalSales'
+	d.CalendarYear
+	,d.MonthNumberOfYear
+	,mdt.IsMaxDate
+	,sum(s.SalesAmount) as 'TotalSales'
 
 FROM DimDate d
 JOIN FactInternetSales s ON d.DateKey = s.OrderDateKey
@@ -515,19 +519,19 @@ AS
 )
 -- Get Current Year and join to CTE for previous year
 SELECT 
-		d.CalendarYear
-	,	d.MonthNumberOfYear
-	,	ms.Sales PrevSales
-	,	SUM(s.SalesAmount) CurrentSales
+	d.CalendarYear
+	,d.MonthNumberOfYear
+	,ms.Sales PrevSales
+	,SUM(s.SalesAmount) CurrentSales
 FROM DimDate d
 JOIN FactInternetSales s ON d.DateKey = s.OrderDateKey
 JOIN MonthlySales ms ON 
 	d.CalendarYear-1 = ms.YearNum AND
 	d.MonthNumberOfYear = ms.MonthNum
 GROUP BY
-		d.CalendarYear
-	,	d.MonthNumberOfYear
-	,	ms.Sales
+	d.CalendarYear
+	,d.MonthNumberOfYear
+	,ms.Sales
 ORDER BY
 		1 DESC, 2 DESC
 
@@ -543,20 +547,20 @@ AS
 )
 -- Get Current Year and join to CTE for previous year
 SELECT 
-		d.CalendarYear
-	,	d.MonthNumberOfYear
-	,	ms.Sales PrevSales
-	,	SUM(s.SalesAmount) CurrentSales
-	,	(SUM(s.SalesAmount) - ms.Sales) / SUM(s.SalesAmount) 'PctGrowth'
+	d.CalendarYear
+	,d.MonthNumberOfYear
+	,ms.Sales PrevSales
+	,SUM(s.SalesAmount) CurrentSales
+	,(SUM(s.SalesAmount) - ms.Sales) / SUM(s.SalesAmount) 'PctGrowth'
 FROM DimDate d
 JOIN FactInternetSales s ON d.DateKey = s.OrderDateKey
 JOIN MonthlySales ms ON 
 	d.CalendarYear-1 = ms.YearNum AND
 	d.MonthNumberOfYear = ms.MonthNum
 GROUP BY
-		d.CalendarYear
-	,	d.MonthNumberOfYear
-	,	ms.Sales
+	d.CalendarYear
+	,d.MonthNumberOfYear
+	,ms.Sales
 ORDER BY
 		1 DESC, 2 DESC
 
@@ -567,10 +571,10 @@ ORDER BY
 -- using ROW_NUMBER() as a Rank function
 -- fragile solution
 SELECT 
-		ROW_NUMBER() OVER (ORDER BY sum(s.SalesAmount) DESC)  AS 'Rank'
-	,	count(DISTINCT s.SalesOrderNumber) 'OrderCount' -- use 1 instead of a field for faster performance
-	,	sum(s.SalesAmount) 'Sales' 
-	,	cat.EnglishProductCategoryName 'Category'
+	ROW_NUMBER() OVER (ORDER BY sum(s.SalesAmount) DESC)  AS 'Rank'
+	,count(DISTINCT s.SalesOrderNumber) 'OrderCount' -- use 1 instead of a field for faster performance
+	,sum(s.SalesAmount) 'Sales' 
+	,cat.EnglishProductCategoryName 'Category'
     ,	sub.EnglishProductSubcategoryName 'SubCategory'	
 FROM FactInternetSales s
 INNER JOIN DimProduct p ON s.ProductKey = p.ProductKey
@@ -589,11 +593,11 @@ ORDER BY 3 DESC;
 -- use RANK() function instead
 -- when RANK() and ROW_NUBER() have the same order by the restults are the same
 SELECT 
-		ROW_NUMBER() OVER (ORDER BY sum(s.SalesAmount) DESC)  AS 'Rank'
-	,	count(DISTINCT s.SalesOrderNumber) 'OrderCount' -- use 1 instead of a field for faster performance
-	,	RANK() OVER (ORDER BY sum(s.SalesAmount) DESC) 'SalesRank' 
-	,	sum(s.SalesAmount) 'TotalSales'
-	,	cat.EnglishProductCategoryName 'Category'
+	ROW_NUMBER() OVER (ORDER BY sum(s.SalesAmount) DESC)  AS 'Rank'
+	,count(DISTINCT s.SalesOrderNumber) 'OrderCount' -- use 1 instead of a field for faster performance
+	,RANK() OVER (ORDER BY sum(s.SalesAmount) DESC) 'SalesRank' 
+	,sum(s.SalesAmount) 'TotalSales'
+	,cat.EnglishProductCategoryName 'Category'
     ,	sub.EnglishProductSubcategoryName 'SubCategory'	
 FROM FactInternetSales s
 INNER JOIN DimProduct p ON s.ProductKey = p.ProductKey
@@ -603,29 +607,29 @@ INNER JOIN DimProductCategory cat ON sub.ProductCategoryKey = cat.ProductCategor
 WHERE YEAR(s.OrderDate) = 2013 --use date function to parse year
 -- must use group by in order for aggregation to work properly
 GROUP BY
-		cat.EnglishProductCategoryName -- column aliases aren't allowed
-    ,	sub.EnglishProductSubcategoryName	
+	cat.EnglishProductCategoryName -- column aliases aren't allowed
+    	,sub.EnglishProductSubcategoryName	
 
 ORDER BY cat.EnglishProductCategoryName, sub.EnglishProductSubcategoryName;
 
 
 -- Show the top product Sub Categories for each year
 SELECT 		
-		count(DISTINCT s.SalesOrderNumber) 'OrderCount' -- use 1 instead of a field for faster performance
-	,	RANK() OVER (PARTITION BY YEAR(s.OrderDate) ORDER BY sum(s.SalesAmount) DESC) 'SalesRank' 
-	,	sum(s.SalesAmount) 'TotalSales'
-	,	cat.EnglishProductCategoryName 'Category'
-    ,	sub.EnglishProductSubcategoryName 'SubCategory'	
-	,	YEAR(s.OrderDate) 'Year'
+	count(DISTINCT s.SalesOrderNumber) 'OrderCount' -- use 1 instead of a field for faster performance
+	,RANK() OVER (PARTITION BY YEAR(s.OrderDate) ORDER BY sum(s.SalesAmount) DESC) 'SalesRank' 
+	,sum(s.SalesAmount) 'TotalSales'
+	,cat.EnglishProductCategoryName 'Category'
+    	,sub.EnglishProductSubcategoryName 'SubCategory'	
+	,YEAR(s.OrderDate) 'Year'
 FROM FactInternetSales s
 INNER JOIN DimProduct p ON s.ProductKey = p.ProductKey
 INNER JOIN DimProductSubcategory sub ON p.ProductSubcategoryKey = sub.ProductSubcategoryKey
 INNER JOIN DimProductCategory cat ON sub.ProductCategoryKey = cat.ProductCategoryKey
 -- must use group by in order for aggregation to work properly
 GROUP BY
-		cat.EnglishProductCategoryName -- column aliases aren't allowed
-    ,	sub.EnglishProductSubcategoryName	
-	,	YEAR(s.OrderDate)
+	cat.EnglishProductCategoryName -- column aliases aren't allowed
+    	,sub.EnglishProductSubcategoryName	
+	,YEAR(s.OrderDate)
 
 ORDER BY YEAR(s.OrderDate), SUM(s.SalesAmount) DESC;
 
