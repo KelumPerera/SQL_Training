@@ -6,6 +6,7 @@ SELECT * FROM FactInternetSales;
 -- limiting results
 SELECT TOP 1000 * FROM FactInternetSales; -- in other DB's use LIMIT 1000;
 
+-- select next 1000 after 1000 rows
 SELECT * FROM FactInternetSales 
 OFFSET 1000 ROWS 
 FETCH NEXT 1000 ROWS ONLY; -- select next 1000 after 1000 rows;
@@ -197,7 +198,6 @@ ORDER BY
 -- Window Functions - Arguments which focuses our analysis to a one particular segments of the data
 
 /*
-
 OVER() 
 	-- executes an aggregation over a given partition and sort order
 	-- works with Ranking, Aggregate and Analytics functions
