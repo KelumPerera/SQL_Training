@@ -648,3 +648,18 @@ FOR EmployeeID IN
 ( [250], [251], [256], [257], [260] )
 ) AS pvt
 ORDER BY pvt.VendorID;
+
+
+-- Create a table with a continues date column
+with mycte as
+ (
+     select cast('2017-10-01' as datetime) DateValue
+     union all
+     select DateValue + 1 
+     from    mycte   
+     where   DateValue + 1 < '2017-11-30'
+ )
+ select *
+into [test].[dbo].[dates60]
+from    mycte
+OPTION (MAXRECURSION 0)
