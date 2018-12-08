@@ -7,7 +7,8 @@ SELECT * FROM FactInternetSales;
 SELECT TOP 1000 * FROM FactInternetSales; -- in other DB's use LIMIT 1000;
 
 -- select next 1000 after 1000 rows
-SELECT * FROM FactInternetSales 
+SELECT * FROM FactInternetSales
+ORDER BY [SalesOrderNumber]
 OFFSET 1000 ROWS 
 FETCH NEXT 1000 ROWS ONLY; -- select next 1000 after 1000 rows;
 
