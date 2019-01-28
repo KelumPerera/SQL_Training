@@ -598,7 +598,9 @@ SELECT
 	,count(DISTINCT s.SalesOrderNumber) 'OrderCount' -- use 1 instead of a field for faster performance
 	,RANK() OVER (ORDER BY sum(s.SalesAmount) DESC) 'SalesRank' 
 	,sum(s.SalesAmount) 'TotalSales'
-	,cat.EnglishProductCategoryName 'Category'
+
+		  
+		  ,cat.EnglishProductCategoryName 'Category'
     ,	sub.EnglishProductSubcategoryName 'SubCategory'	
 FROM FactInternetSales s
 INNER JOIN DimProduct p ON s.ProductKey = p.ProductKey
@@ -664,3 +666,11 @@ with mycte as
 into [test].[dbo].[dates60]
 from    mycte
 OPTION (MAXRECURSION 0)
+
+		  
+		 
+-- Replace a particular value in a column with spesific value
+UPDATE [TEST].[dbo].[Table]
+SET [Column1] = REPLACE([Column1],'\' ,  '_')
+WHERE [Column1] LIKE '%\%'
+		
