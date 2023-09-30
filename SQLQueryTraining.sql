@@ -674,3 +674,47 @@ UPDATE [TEST].[dbo].[Table]
 SET [Column1] = REPLACE([Column1],'\' ,  '_')
 WHERE [Column1] LIKE '%\%'
 		
+
+
+-- Return the difference between the highest & lowest price
+SELECT  EXTRACT(month FROM date::DATE) AS month,
+       MAX(price) - MIN(price) AS difference
+FROM fruit_2022
+GROUP BY month
+ORDER BY month;
+
+
+-- Return the row that appears in both tables
+SELECT *
+FROM movie_2000
+INTERSECT 
+SELECT *
+FROM movie_2010;
+
+-- Return the rows that only appear in first table
+SELECT *
+FROM movie_2000
+EXCEPT 
+SELECT *
+FROM movie_2010
+ORDER BY year;
+
+
+
+SELECT vendor_name,vendor_city,vendor_state
+FROM vendors
+WHERE vendor_state IN ('WA', 'TX') AND
+      vendor_city != 'AUSTIN';
+
+
+-- Count when both two columns contain null value
+SELECT 
+      COUNT(*) 
+FROM vendors
+WHERE COALESCE(vendor_city,vendor_state) IS NULL;
+
+-- Make the first letter in Capital
+SELECT vendor_id, 
+      INITCAP(vendor_name) AS vendor_name
+FROM vendors
+LIMIT 3;
